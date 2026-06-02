@@ -19,3 +19,10 @@ def test_list_items():
 
     items = service.list_items()
     assert len(items) == 2
+
+def test_update_item_success():
+    db = InMemoryDB()
+    service = ItemService(db)
+    item_data = {"name": "Updated Item"}
+    result = service.update_item("123", item_data)
+    assert result["name"] == "Updated Item"
