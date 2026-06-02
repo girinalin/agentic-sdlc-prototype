@@ -1,0 +1,92 @@
+# -----------------------------
+# Python / FastAPI
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+.env
+.env.*
+.venv/
+venv/
+pip-wheel-metadata/
+dist/
+build/
+
+# FastAPI cache
+.cache/
+.pytest_cache/
+
+# -----------------------------
+# Node / React (frontend)
+# -----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+.vite/
+
+# Local environment files
+frontend/.env
+frontend/.env.*
+
+# -----------------------------
+# VS Code / Codespaces
+# -----------------------------
+.vscode/
+.history/
+*.code-workspace
+*.devcontainer/
+.devcontainer.json
+
+# -----------------------------
+# Local LLM tooling
+# -----------------------------
+# Ollama models (never commit)
+~/.ollama/
+ollama/
+ollama-models/
+
+# LM Studio cache
+lmstudio/
+lm-studio/
+*.gguf
+
+# Continue.dev
+.continue/
+continue/
+continue_history/
+
+# Cline
+.cline/
+
+# -----------------------------
+# Docker
+# -----------------------------
+docker-data/
+docker-volume/
+*.tar
+*.img
+
+# -----------------------------
+# Agentic SDLC
+# -----------------------------
+# Keep all .agentic files EXCEPT generated artifacts
+.agentic/output/
+.agentic/tmp/
+.agentic/cache/
+
+# -----------------------------
+# OS-specific
+# -----------------------------
+.DS_Store
+Thumbs.db
