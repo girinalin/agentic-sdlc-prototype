@@ -1,9 +1,18 @@
+import pytest
 from fastapi.testclient import TestClient
-from src.main import app
 
-client = TestClient(app)
+from backend.src.api.dependencies import service
+from backend.src.main import app
 
-def test_create_and_get_item():
+
+@pytest.fixture
+def client():
+    service.db.items.clear()
+    with TestClient(app) as test_client:
+        yield test_client
+
+
+def test_create_and_get_item(client):
     response = client.post("/api/items", json={"name": "Item1"})
     assert response.status_code == 201
     item_id = response.json()["id"]
@@ -12,16 +21,48 @@ def test_create_and_get_item():
     assert get_response.status_code == 200
     assert get_response.json()["name"] == "Item1"
 
-async def test_update_item_success():
-    item_data = {"name": "Updated Item"}
-    response = await client.put("/items/123", json=item_data)
+
+def test_update_item_success(client):
+    create_response = client.post("/api/items", json={"name": "Original"})
+    item_id = create_response.json()["id"]
+
+    response = client.put(
+        f"/api/items/{item_id}",
+        json={"name": "Updated Item", "description": "Updated description"},
+    )
+
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "success"
-    assert data["item"]["name"] == "Updated Item"
+    assert data["name"] == "Updated Item"
+    assert data["description"] == "Updated description"
 
-async def test_update_item_not_found():
-    response = await client.put("/items/999", json={"name": "Nonexistent"})
+
+def test_update_item_not_found(client):
+    response = client.put("/api/items/999", json={"name": "Nonexistent"})
+
     assert response.status_code == 404
-    data = response.json()
-    assert data["detail"] == "Item not found"
+    assert response.json()["detail"] == "Item not found"
+
+
+def test_delete_item(client):
+    create_response = client.post("/api/items", json={"name": "Delete me"})
+    item_id = create_response.json()["id"]
+
+    response = client.delete(f"/api/items/{item_id}")
+
+    assert response.status_code == 204
+    assert client.get(f"/api/items/{item_id}").status_code == 404
+
+
+def test_delete_item_not_found(client):
+    response = client.delete("/api/items/999")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Item not found"
+
+
+def test_health_check(client):
+    response = client.get("/health")
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "healthy"}

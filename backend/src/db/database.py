@@ -1,4 +1,5 @@
-from models.item import Item
+from ..models.item import Item
+
 
 class InMemoryDB:
     def __init__(self):

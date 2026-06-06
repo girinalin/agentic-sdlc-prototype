@@ -1,7 +1,15 @@
 # FastAPI Backend
 
 ## Run locally
-uvicorn src.main:app --reload
+
+From the repository root:
+
+```bash
+backend/.venv/bin/uvicorn backend.src.main:app --reload
+```
 
 ## Run tests
-pytest --cov=src
+
+```bash
+backend/.venv/bin/pytest --cov=backend/src
+```

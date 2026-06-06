@@ -1,6 +1,7 @@
-from services.item_service import ItemService
-from db.database import InMemoryDB
-from models.item import ItemCreate
+from backend.src.db.database import InMemoryDB
+from backend.src.models.item import ItemCreate, ItemUpdate
+from backend.src.services.item_service import ItemService
+
 
 def test_create_item():
     db = InMemoryDB()
@@ -20,9 +21,30 @@ def test_list_items():
     items = service.list_items()
     assert len(items) == 2
 
+
 def test_update_item_success():
     db = InMemoryDB()
     service = ItemService(db)
-    item_data = {"name": "Updated Item"}
-    result = service.update_item("123", item_data)
-    assert result["name"] == "Updated Item"
+    item = service.create_item(ItemCreate(name="Original"))
+
+    result = service.update_item(item.id, ItemUpdate(name="Updated Item"))
+
+    assert result is not None
+    assert result.name == "Updated Item"
+
+
+def test_update_item_not_found():
+    service = ItemService(InMemoryDB())
+
+    result = service.update_item(999, ItemUpdate(name="Missing"))
+
+    assert result is None
+
+
+def test_delete_item():
+    service = ItemService(InMemoryDB())
+    item = service.create_item(ItemCreate(name="Delete me"))
+
+    assert service.delete_item(item.id) is True
+    assert service.get_item(item.id) is None
+    assert service.delete_item(item.id) is False
